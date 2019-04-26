@@ -1,0 +1,74 @@
+.fps60 {
+    height: 135px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url("./60fps.png")
+}
+
+
+.spelunky-anim {
+    display: block;
+    background: red;
+    max-width: 100%;
+    min-width: 100%;
+    min-height: 100%;
+    max-height: 100%;
+    background: url(./spelunky/result.png);
+    background-position: 0 0;
+    animation-name: example;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+
+}
+
+@keyframes example {
+    0% {
+        background-position: 10% 10%;
+    }
+    25% {
+        background-position: 40% 70%;
+    }
+    50% {
+        background-position: 70% 10%;
+    }
+    75% {
+        background-position: 10% 70%;
+    }
+    100% {
+        background-position: 10% 10%;
+    }
+}
+
+.spaceBetween {
+    justify-content: space-between;
+}
+
+.spaceBetween::after, .spaceBetween::before {
+    position: absolute;
+
+}
+.quote{
+    padding-left: 6.4rem;
+    position: relative;
+}
+
+
+.quote:before {
+        content: '\201C';
+        font-family: arial, sans-serif;
+        font-size: 12rem;
+        height: 5.6rem;
+        left: -.8rem;
+        line-height: 1;
+        position: absolute;
+        text-align: center;
+        top: -4rem;
+        width: 5.6rem;
+}
+
+
+.quote:before {
+    left: .8rem;
+    top: -1.6rem;
+
+}
