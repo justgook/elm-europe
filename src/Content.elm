@@ -23,31 +23,32 @@ slidePos i =
 
 all : List (Slide.Slide a msg)
 all =
-    pixelPerfect
-        :: [ jsonParser
-           , spelunky
-           , pixelPerfect
-           , pixelSnapping
-           , entityComponentSystem
-           , patterns
-           , resources
-           ]
-        ++ [ intro
-           , game
-           , graphics
-           , htmlPlusCss
-           , svg
-           , webGL
-           , extraCredit
-           , tools
-           , jsonParser
-           , spelunky
-           , pixelPerfect
-           , pixelSnapping
-           , entityComponentSystem
-           , patterns
-           , resources
-           ]
+    --    pixelPerfect
+    --        :: [ jsonParser
+    --           , spelunky
+    --           , pixelPerfect
+    --           , pixelSnapping
+    --           , entityComponentSystem
+    --           , patterns
+    --           , resources
+    --           ]
+    --        ++
+    [ intro
+    , game
+    , graphics
+    , htmlPlusCss
+    , svg
+    , webGL
+    , extraCredit
+    , tools
+    , jsonParser
+    , spelunky
+    , pixelPerfect
+    , pixelSnapping
+    , entityComponentSystem
+    , patterns
+    , resources
+    ]
         |> List.indexedMap (\i -> Slide.slide (slidePos (toFloat i)) dimension)
 
 
