@@ -71,7 +71,8 @@ world =
                     (\i _ ->
                         vec2 (289 + (550 + 580) * toFloat i) 61
                     )
-                |> Debug.log "Content.all"
+
+        --                |> Debug.log "Content.all"
     in
     { positions = Component.positions.empty
     , dimensions = Component.dimensions.empty
