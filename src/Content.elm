@@ -23,16 +23,6 @@ slidePos i =
 
 all : List (Slide.Slide a msg)
 all =
-    --    pixelPerfect
-    --        :: [ jsonParser
-    --           , spelunky
-    --           , pixelPerfect
-    --           , pixelSnapping
-    --           , entityComponentSystem
-    --           , patterns
-    --           , resources
-    --           ]
-    --        ++
     [ intro
     , game
     , graphics
@@ -40,10 +30,15 @@ all =
     , svg
     , webGL
     , extraCredit
-    , tools
-    , jsonParser
-    , spelunky
+    , problemLevelEditor
+    , solutionLevelEditor
+    , problemAntialiasing
+    , solutionAntialiasing
     , pixelPerfect
+    , problemTilemap
+    , solutionTilemap
+    , spelunky
+    , tools
     , pixelSnapping
     , entityComponentSystem
     , patterns
@@ -56,6 +51,141 @@ type alias Content msg =
     List (Html msg)
 
 
+problemLevelEditor : Content msg
+problemLevelEditor =
+    [ section [ class "bg-light aligncenter" ]
+        [ h2 [] [ text "Problem:" ]
+        , h2 [] [ text "Code own format or use Tiled" ]
+        , pre []
+            [ code [ class "glsl" ]
+                [ text """...
+  "height":6,
+  "infinite":false,
+  "layers":[
+    {
+      "data":[117, 118, 119, 120, 121, 175, 176, 177, 178, 179,...],
+      "height":6,
+      "id":1,
+      "name":"Layer",
+      "opacity":1,
+      "type":"tilelayer",
+      "visible":true,
+      "width":5,
+      "x":0,
+      "y":0
+...
+"""
+                ]
+            ]
+        ]
+    ]
+
+
+solutionLevelEditor : Content msg
+solutionLevelEditor =
+    [ section [ class "bg-light aligncenter" ]
+        [ h2 [] [ text "Solution:" ]
+        , h2 [] [ text "Create Decoder for Tiled" ]
+        , pre []
+            [ code [ class "elm" ]
+                [ text """
+decode : Decoder Level
+decode =
+    Decode.field "orientation" Decode.string
+        |> Decode.andThen
+            (\\orientation ->
+                case orientation of
+                    "orthogonal" ->
+                        decodeLevelData |> Decode.map Orthogonal
+
+                    "isometric" ->
+                        decodeLevelData |> Decode.map Isometric
+
+                    ...
+                    _ ->
+                        Decode.fail ("Unknown orientation `" ++ orientation ++ "`")
+            )
+                """
+                ]
+            ]
+        ]
+    ]
+
+
+problemTilemap : Content msg
+problemTilemap =
+    [ section [ class "bg-light aligncenter" ]
+        [ h2 [] [ text "Problem" ]
+        , h2 [] [ text "WebGL not supports Array*" ]
+        , pre [] [ code [ class "glsl" ] [ text """uniform float lut[100][100];
+uniform int imageCount;
+
+void main()
+{
+  vec2 point = ((vcoord / (1.0 / tilesPerUnit))) + (viewportOffset / tileSize) * scrollRatio;
+  float tileIndex = lut[point.x][point.y];
+}""" ] ]
+        ]
+    ]
+
+
+solutionTilemap : Content msg
+solutionTilemap =
+    [ section [ class "bg-light aligncenter" ]
+        [ h2 [] [ text "Solution" ]
+        , h2 [] [ text "Textures is just 2D Arrary in WebGl" ]
+        , pre [] [ code [ class "glsl" ] [ text """uniform sampler2D lut;
+uniform int imageCount;
+float color2float(vec4 c) {
+    return c.z * 255.0
+    + c.y * 256.0 * 255.0
+    + c.x * 256.0 * 256.0 * 255.0
+    ;
+}
+void main()
+{
+  vec2 point = ((vcoord / (1.0 / tilesPerUnit))) + (viewportOffset / tileSize) * scrollRatio;
+  float tileIndex = color2float(texture2D(lut, point));
+}""" ] ]
+        ]
+    ]
+
+
+problemAntialiasing : Content msg
+problemAntialiasing =
+    [ section [ class "bg-light aligncenter" ]
+        [ h2 [] [ text "Problem" ]
+        , h2 [] [ text "WebGL always smooth out textures*" ]
+        , pre [] [ code [ class "glsl" ] [ text """uniform sampler2D image;
+varying vec2 vcoord;
+void main()
+{
+  gl_FragColor = texture2D(image, vcoord);
+}""" ] ]
+        ]
+    ]
+
+
+solutionAntialiasing : Content msg
+solutionAntialiasing =
+    [ section [ class "bg-light aligncenter" ]
+        [ h2 [] [ text "Solution" ]
+        , h2 [] [ text "Always sample from center of pixel" ]
+        , pre [] [ code [ class "glsl" ] [ text """uniform sampler2D image;
+uniform float pixelsPerUnit;
+uniform vec2 size;
+void main()
+{
+    //(2i + 1)/(2N) Pixel center
+    vec2 pixel = (floor(vcoord * pixelsPerUnit) + 0.5 ) / size;
+    gl_FragColor = texture2D(image, mod(pixel, 1.0)); // mod -  for repeat
+    gl_FragColor.rgb *= gl_FragColor.a;
+}""" ] ]
+        ]
+    ]
+
+
+extraCredit : Content msg
 extraCredit =
     [ section [ class "bg-black slide-bottom" ]
         [ span
@@ -519,36 +649,6 @@ tools =
                     ]
                 ]
             ]
-        ]
-    ]
-
-
-jsonParser : Content msg
-jsonParser =
-    --    https://doc.mapeditor.org/en/stable/reference/json-map-format/#object
-    [ section [ class "bg-light aligncenter" ]
-        [ h3 [] [ text "Json Parser & Tiled Json Format" ]
-        , pre [] [ code [ class "glsl" ] [ text """{
-  "height":6,
-  "infinite":false,
-  "layers":[
-    {
-      "data":[117, 118, 119, 120, 121, 175, 176, 177, 178, 179,...],
-      "height":6,
-      "id":1,
-      "name":"Layer",
-      "opacity":1,
-      "type":"tilelayer",
-      "visible":true,
-      "width":5,
-      "x":0,
-      "y":0
-    }
-    ....
-  ],
-  "width": 6,
-...
-}""" ] ]
         ]
     ]
 
