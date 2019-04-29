@@ -1,4 +1,4 @@
-port module Main exposing (main)
+module Main exposing (main, world)
 
 import AltMath.Vector2 exposing (Vec2, vec2)
 import Cinematic exposing (cinemascope, viewportOffsetShake)
@@ -6,6 +6,7 @@ import Content
 import Defaults exposing (default)
 import Develop exposing (World, document)
 import Layer
+import Logic.Component as Component
 import Logic.Entity
 import Physic.AABB as AABB
 import Physic.Narrow.AABB as AABB
@@ -14,8 +15,11 @@ import System.Slide
 import VirtualDom
 import WebGL
 import World.Component as Component
+import World.Component.Animation as Animation exposing (AnimationDict)
 import World.Component.Camera
+import World.Component.Input as Input
 import World.Component.Physics
+import World.Component.Sprite
 import World.RenderSystem
 import World.Subscription exposing (keyboard)
 import World.System.AnimationChange
@@ -53,9 +57,7 @@ aabb =
 
 
 read =
-    [ Component.positions.read
-    , Component.dimensions.read
-    , Component.sprites.read
+    [ Component.sprites.read
     , Component.direction.read
     , Component.animations.read
     , aabb.read
@@ -63,6 +65,19 @@ read =
     ]
 
 
+type alias World =
+    { animations : Component.Set AnimationDict
+    , camera : World.Component.Camera.Follow
+    , cinematic : Cinematic
+    , direction : Input.Direction
+    , physics : World.Component.Physics.World
+    , slideOpacity : Float
+    , slideStops : SlideStops
+    , sprites : Component.Set World.Component.Sprite.Sprite
+    }
+
+
+world : World
 world =
     let
         slideStopsNext =
@@ -74,9 +89,7 @@ world =
 
         --                |> Debug.log "Content.all"
     in
-    { positions = Component.positions.empty
-    , dimensions = Component.dimensions.empty
-    , direction = Component.direction.empty
+    { direction = Component.direction.empty
     , sprites = Component.sprites.empty
     , animations = Component.animations.empty
     , physics = aabb.empty

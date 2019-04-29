@@ -30,6 +30,8 @@ all =
     , svg
     , webGL
     , extraCredit
+    , entityComponentSystem
+    , worldTiledProblem
     , problemLevelEditor
     , solutionLevelEditor
     , problemAntialiasing
@@ -39,8 +41,8 @@ all =
     , solutionTilemap
     , spelunky
     , tools
-    , pixelSnapping
-    , entityComponentSystem
+
+    --    , pixelSnapping
     , patterns
     , resources
     ]
@@ -49,6 +51,63 @@ all =
 
 type alias Content msg =
     List (Html msg)
+
+
+entityComponentSystem : Content msg
+entityComponentSystem =
+    [ section [ class "bg-light" ]
+        [ h2 [ class "aligncenter" ] [ text "Entity Component System" ]
+        , ol []
+            [ li [] [ text "System" ]
+            , li [] [ text "Component" ]
+            , li [] [ text "Intersection of Components" ]
+            ]
+        ]
+    ]
+
+
+worldTiledProblem : Content msg
+worldTiledProblem =
+    [ section [ class "bg-white" ]
+        [ h2 [ class "aligncenter" ] [ text "Tiled.Level not map on ECS World" ]
+        , div []
+            [ div [ class "content-left" ]
+                [ pre [ style "padding" "0" ]
+                    [ code [ class "elm" ]
+                        [ text """type alias World comparable =
+    { backgroundcolor : String
+    , height : Int
+    , infinite : Bool
+    , layers : List Layer
+    , nextobjectid : Int
+    , renderorder : RenderOrder
+    , tiledversion : String
+    , tileheight : Int
+    , tilesets : List Tileset
+    , tilewidth : Int
+    , version : Float
+    , width : Int
+    , properties : Properties
+    }"""
+                        ]
+                    ]
+                ]
+            , div [ class "content-right" ]
+                [ pre [ style "padding" "0" ]
+                    [ code [ class "elm" ]
+                        [ text """type alias World comparable =
+    { animations : CompSet AnimDict
+    , camera : Camera
+    , direction : Input.Direction
+    , physics : Physics.World
+    , sprites : CompSet Sprite
+    }"""
+                        ]
+                    ]
+                ]
+            ]
+        ]
+    ]
 
 
 problemLevelEditor : Content msg
@@ -649,27 +708,6 @@ tools =
                     ]
                 ]
             ]
-        ]
-    ]
-
-
-
---delme : Content msg
---delme =
---    [ figure [ class "browser" ]
---        [ a [ target "_blank",href "#" ]
---            [ img [ alt "Screenshot", src "https://justgook.github.io/p2pElm/preview.png" ]
---                []
---            ]
---        ]
---    ]
-
-
-entityComponentSystem : Content msg
-entityComponentSystem =
-    [ section [ class "bg-light aligncenter" ]
-        [ h3 [] [ text "ECS" ]
-        , p [ class "text-subtitle" ] [ text "Some more text" ]
         ]
     ]
 
